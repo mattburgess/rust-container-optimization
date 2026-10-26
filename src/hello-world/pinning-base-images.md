@@ -1,6 +1,6 @@
-# Dependencies
+# Pinning Base Images and Tooling
 
-## Pinning dependencies
+## Pinning image references
 
 The first 2 issues mentioned in [Initial Observations](./hello-world.md#initial-observations) concerned implicit and explicit build-time dependencies that weren't pinned to specific versions. Both of those can lead to build issues that depend on either the time the build is invoked or the machine on which it is invoked.
 
@@ -28,7 +28,7 @@ There are a number of techniques that can be used to mitigate docker.io's thrott
 2. Setup a Personal/Free account on Docker Hub, or for development teams, a Pro/Team/Business account.
 3. Implement a private registry that mirrors/caches source images.
 
-Whilst a private registry is recommended for production systems, it's out of scope for this guide. Instead, we'll simply use Amazons Public ECR.
+While a private registry is recommended for production systems, it's out of scope for this guide. Instead, we'll simply use Amazon's Public ECR.
 
 Our `FROM rust` line can now change to `public.ecr.aws/docker/library/rust:1.99.1-trixie` to both avoid docker.io rate limits and to pin to a fixed variant and version of the image.
 

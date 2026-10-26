@@ -1,4 +1,4 @@
 FROM rust
 COPY . .
 RUN cargo build --release
-ENTRYPOINT [ "/target/debug/hello-world" ]
+ENTRYPOINT [ "/target/release/hello-world" ]

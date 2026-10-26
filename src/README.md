@@ -1,8 +1,8 @@
 # Introduction
 
-Welcome to Rust Container Optimization! This book is intended to offer tips and tricks for optimizing container images, and their build processes, with a specific focus on Rust.
+Welcome to Rust Container Optimization! This book is intended to offer tips and tricks for optimizing container images and their build processes, with a specific focus on Rust.
 
-Whilst the code examples throughout the book are relatively simple, some familiarity with the Rust programming language is useful, as is prior experience with the `docker`, `podman` or similar container tools.
+While the code examples throughout the book are relatively simple, some familiarity with the Rust programming language is useful, as is prior experience with the `docker`, `podman` or similar container tools.
 
 ## Pre-Requisites
 

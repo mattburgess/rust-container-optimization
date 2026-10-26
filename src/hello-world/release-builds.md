@@ -1,10 +1,10 @@
 # Release Builds
 
-At the moment, the compiled binary inside our image is 4.4MiB. By providing a few parameters to the Rust compiler, though, we can improve things quite considerably. The main gains are achieved by using Rust's `release` profile which aims to optimize the compilation and linking process to produce smaller binaries suitable for production use. It does this by, amongst other things, removing information that's only required for debugging during development.
+At the moment, the compiled binary inside our image is 4.4MiB. By providing a few parameters to the Rust compiler, though, we can improve things quite considerably. The main gains are achieved by using Rust's `release` profile which aims to optimize the compilation and linking process to produce smaller binaries suitable for production use. It does this by, among other things, removing information that's only required for debugging during development.
 
 ## Release profile tuning
 
-Cargo's configuration file, `cargo.toml` can be used to change the options that the Rust toolchain is invoked with and some of these can have substantial effects on the resultant binary size. Append the following to your hello-world's default `cargo.toml` file:
+Cargo's configuration file, `Cargo.toml` can be used to change the options that the Rust toolchain is invoked with and some of these can have substantial effects on the resultant binary size. Append the following to your hello-world's default `Cargo.toml` file:
 
 ```toml
 [profile.release]
@@ -26,7 +26,7 @@ Using `abort` instead of the default `unwind` removes structural constraints tha
 
 ### debug = "line-tables-only"
 
-The default for the `release` profile is `debug = false`, which strips all debug-related information from the binary, which also includes human-readable file and line information that would otherwise appear in crash logs. Setting this to `line-tables-only` retains the absolute minimum amount of debug information required to produce meaningful backtraces with filenames and line numbers, without bloating the binary size with variable or type metadata. If the application crashes in production then this information alongside other telemtry (metrics, logs, and traces) can prove invaluable in understanding the root cause.
+The default for the `release` profile is `debug = false`, which strips all debug-related information from the binary, which also includes human-readable file and line information that would otherwise appear in crash logs. Setting this to `line-tables-only` retains the absolute minimum amount of debug information required to produce meaningful backtraces with filenames and line numbers, without bloating the binary size with variable or type metadata. If the application crashes in production then this information alongside other telemetry (metrics, logs, and traces) can prove invaluable in understanding the root cause.
 
 ### split-debuginfo = "packed"
 
@@ -44,7 +44,7 @@ The default for the `release` profile is `codegen-units = 16`, which splits the 
 
 There are some other options that can help produce smaller binaries. However, they've been explicitly omitted from this guide as their tradeoff against performance or observability are deemed to be not worth it:
 
-* `strip = true` - this would result in the fielename and line number information provided by `debug = "line-tables-only"` being removed
+* `strip = true` - this would result in the filename and line number information provided by `debug = "line-tables-only"` being removed
 * `opt-level = "z"` - this tells the compiler to optimize for binary size at the expense of speed.
 
 As we're not targeting a resource constrained execution environment, such as embedded hardware, where every byte counts, we opt for observability and execution speed over absolute minimal file size.
@@ -79,7 +79,7 @@ $ docker run -it --entrypoint /bin/sh localhost/hello-world:latest \
   -rw-r--r--. 2 root root 591K Oct 22 19:51 /target/release/hello-world.dwp
 ```
 
-We've shrunk the binary from 4.4MiB -> 1.25MiB (taking the split debuginfo file into account), representing ~72% improvemtn whilst maintaining reasonable debugging and speed optimizations for production use.
+We've shrunk the binary from 4.4MiB -> 1.25MiB (taking the split debuginfo file into account), representing ~72% improvement while maintaining reasonable debugging and speed optimizations for production use.
 
 The image itself is still massive though:
 
