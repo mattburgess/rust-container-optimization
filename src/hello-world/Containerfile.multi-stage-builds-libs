@@ -1,0 +1,17 @@
+# syntax=docker/dockerfile:1.28.0
+FROM public.ecr.aws/docker/library/rust:1.99.1-slim-trixie AS builder
+COPY . .
+RUN cargo build --release
+RUN ldd /target/release/hello-world
+
+FROM scratch
+COPY --from=builder \
+    target/release/hello-world \
+    target/release/hello-world.dwp \
+    /
+COPY --from=builder \
+    /lib/x86_64-linux-gnu/libgcc_s.so.1 \
+    /lib/x86_64-linux-gnu/libc.so.6 \
+    /lib/x86_64-linux-gnu/
+COPY --from=builder /lib64/ld-linux-x86-64.so.2 /lib64/
+ENTRYPOINT [ "/hello-world" ]

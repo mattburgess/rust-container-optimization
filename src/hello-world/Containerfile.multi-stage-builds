@@ -1,0 +1,11 @@
+# syntax=docker/dockerfile:1.28.0
+FROM public.ecr.aws/docker/library/rust:1.99.1-slim-trixie AS builder
+COPY . .
+RUN cargo build --release
+
+FROM scratch
+COPY --from=builder \
+    target/release/hello-world \
+    target/release/hello-world.dwp \
+    /
+ENTRYPOINT [ "/hello-world" ]
