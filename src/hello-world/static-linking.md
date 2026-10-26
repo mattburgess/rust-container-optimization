@@ -33,4 +33,4 @@ The main reason is compilation speed. The `musl` library's default memory alloca
 
 That's about as far as we can take things for the image itself. In the next section, we'll compile a simple web service as a more realistic containerized application before seeing how we can optimize for local build speed/fast feedback loops.
 
-[^1]: [performance issue for musl binary built by rust](https://github.com/rust-lang/rust/issues/70108)
+[^1]: This allocation overhead is documented in the upstream Rust Issue Tracker: [Performance issues with musl binaries](https://github.com/rust-lang/rust/issues/70108), which outlines the comparative latency of the default allocator under high parallel loads.
