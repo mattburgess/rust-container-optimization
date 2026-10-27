@@ -12,7 +12,7 @@ The `Containerfile` below installs the `musl` target for Rust and instructs the 
 
 Build the image as usual:
 
-```sh
+```shell
 $ docker build -t localhost/hello-world:latest .
 ...
 Successfully tagged localhost/hello-world:latest

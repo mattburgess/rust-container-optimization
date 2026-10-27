@@ -2,7 +2,7 @@
 
 To get started, we'll create the stereotypical "Hello World" program and build a container image that can be run locally.
 
-```sh
+```shell
 $ cargo init hello-world
     Creating binary (application) package
 note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -10,7 +10,7 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 
 Confirm that the program compiles and runs:
 
-```sh
+```shell
 $ cd hello-world
 $ cargo build
    Compiling hello-world v0.1.0 (/home/mattburgess/dev/hello-world)
@@ -32,7 +32,7 @@ In order to compile our Rust source code into a container image, we'll need a so
 
 Now build our first image and run it to confirm it works as expected:
 
-```sh
+```shell
 $ docker build -t localhost/hello-world:latest .
 STEP 1/4: FROM rust
 Resolved "rust" as an alias (/etc/containers/registries.conf.d/000-shortnames.conf)
@@ -70,7 +70,7 @@ The good news is that the container successfully builds and runs, but there are 
 1. ``Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.10s`` - by default, `cargo build` will produce a `debug` build.
 1. And last, but certainly by no means least, the image is huge!
 
-   ```sh
+   ```shell
    $ docker image ls -a localhost/hello-world:latest
    REPOSITORY             TAG         IMAGE ID      CREATED        SIZE
    localhost/hello-world  latest      b9310700b81e  6 minutes ago  1.69 GB
@@ -78,7 +78,7 @@ The good news is that the container successfully builds and runs, but there are 
 
    Note that the binary itself is relatively small but with some simple tweaks to the compilation process can be shrunk:
 
-   ```sh
+   ```shell
    $ docker run -it --entrypoint /bin/sh localhost/hello-world:latest -c 'ls -lh /target/debug/hello-world'
    -rwxr-xr-x. 2 root root 4.4M Oct 12 20:48 /target/debug/hello-world
    ```

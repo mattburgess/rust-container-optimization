@@ -10,7 +10,7 @@ The `Containerfile` below shows a simple multi-stage build:
 
 Note that the build process remains the same as before:
 
-```sh
+```shell
 $ docker build -t localhost/hello-world:latest .
 [1/2] STEP 1/3: FROM public.ecr.aws/docker/library/rust:1.99.1-slim-trixie AS build
 [1/2] STEP 2/3: COPY . .
@@ -30,7 +30,7 @@ Successfully tagged localhost/hello-world:latest
 
 The image is now incredibly small, and as we'd expect given the `Containerfile` above, the same size as our combined binary + debuginfo:
 
-```sh
+```shell
 $ docker image ls -a localhost/hello-world:latest
 REPOSITORY             TAG         IMAGE ID      CREATED        SIZE
 localhost/hello-world  latest      d93833c4e004  3 minutes ago  1.31MB
@@ -38,7 +38,7 @@ localhost/hello-world  latest      d93833c4e004  3 minutes ago  1.31MB
 
 Unfortunately, there's just one minor problem...it doesn't actually work:
 
-```sh
+```shell
 $ docker run localhost/hello-world:latest
 {
   "msg": "exec container process (missing dynamic library?) `\/hello-world`: No such file or directory",
@@ -55,7 +55,7 @@ The `missing dynamic library?` error is the smoking gun! By default, the Rust to
 
 Running the usual `docker build` command prints out the following:
 
-```sh
+```shell
 [1/2] STEP 4/4: RUN ldd target/release/hello-world
  linux-vdso.so.1 (0x00007faf0be60000)
  libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007faf0bdd4000)
@@ -69,7 +69,7 @@ Now we have a full list of what the binary requires, we can adjust the Container
 {{#include Containerfile.multi-stage-builds-libs}}
 ```
 
-```sh
+```shell
 $ docker build -t localhost/hello-world:latest .
 ...
 $ docker run localhost/hello-world:latest
@@ -78,7 +78,7 @@ Hello, world!
 
 Excellent, it works again! But what about the size?
 
-```sh
+```shell
 $ docker image ls -a localhost/hello-world:latest
 REPOSITORY             TAG         IMAGE ID      CREATED        SIZE
 localhost/hello-world  latest      fd31f13955bf  2 minutes ago  3.73 MB

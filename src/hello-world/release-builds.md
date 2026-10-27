@@ -59,7 +59,7 @@ Adjust the `cargo build` command in your `Containerfile` to instruct it to use t
 
 Build the container again and confirm it works:
 
-```sh
+```shell
 $ docker build -t localhost/hello-world:latest .
 ...
 Successfully tagged localhost/hello-world:latest
@@ -71,7 +71,7 @@ Hello, world!
 
 And what about its size?
 
-```sh
+```shell
 $ docker run -it --entrypoint /bin/sh localhost/hello-world:latest \
      -c 'ls -lh /target/release/hello-world*'
   -rwxr-xr-x. 2 root root 689K Oct 22 19:51 /target/release/hello-world
@@ -83,7 +83,7 @@ We've shrunk the binary from 4.4MiB -> 1.25MiB (taking the split debuginfo file 
 
 The image itself is still massive though:
 
-```sh
+```shell
 $ docker image ls -a localhost/hello-world:latest
 REPOSITORY             TAG         IMAGE ID      CREATED         SIZE
 localhost/hello-world  latest      0528b9293f88  28 seconds ago  1.69 GB

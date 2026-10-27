@@ -46,7 +46,7 @@ Given all of the advice above, the resultant `Containerfile` is given below:
 
 And the results?
 
-```sh
+```shell
 $ docker build -t localhost/hello-world:latest .
 STEP 1/4: FROM public.ecr.aws/docker/library/rust:1.99.1-slim-trixie
 STEP 2/4: COPY . .
