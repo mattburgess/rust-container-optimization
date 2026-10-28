@@ -55,9 +55,9 @@ Note how the `COPY . .` step, and all subsequent steps, now no longer have a rel
 
 ## Ignore unnecessary files
 
-The first way we have of preventing unneccesary cache invalidation is by not copying files that are unrelated to the image build process into the Docker build context. In the example above, we created a `dummy.txt` file that had nothing at all to do with the Rust program that was being compiled, yet doing so caused the `RUN cargo build...` layer (and subsequent layers) to be rebuilt.
+The first way we have of preventing unnecesary cache invalidation is by not copying files that are unrelated to the image build process into the Docker build context. In the example above, we created a `dummy.txt` file that had nothing at all to do with the Rust program that was being compiled, yet doing so caused the `RUN cargo build...` layer (and subsequent layers) to be rebuilt.
 
-The `.dockerignore` file can be used to explicitly omit files and directories from being copied into the Docker build context. Instead of blacklisting files that we don't want to be copied, we instead whitelist files that we know are required to build and run the application. This prevents any accidental or temporary local files from invalidating the build cache:
+The `.dockerignore` file can be used to explicitly omit files and directories from being copied into the Docker build context. Instead of maintaining a deny list of files that we don't want to be copied, we instead explicitly allow files that we know are required to build and run the application. This prevents any accidental or temporary local files from invalidating the build cache:
 
 ```txt
 # Prevent cache-busting Docker layers by omitting unrelated files from the
@@ -164,4 +164,4 @@ $ time docker build -t localhost/hello-world-ws:latest
 real    0m10.970s
 ```
 
-Note how all steps in the `builder` stage use the cached dependency layers and only the actual `hello-world-rs` binary compilation is performed due to the change in source code, exactly what we wanted. It results in a huge 75% reduction in build time.
+Note how all steps in the `builder` stage use the cached dependency layers and only the actual `hello-world-ws` binary compilation is performed due to the change in source code, exactly what we wanted. It results in a huge 75% reduction in build time.
