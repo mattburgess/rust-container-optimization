@@ -2,10 +2,10 @@
 
 ## Introduction
 
-[Sccache] is a compiler caching tool. It is used to avoid recompiling anything that hasn't changed since the last invocation of the compiler. In Rust this can largely be broken down into to areas:
+[Sccache] is a compiler caching tool. It is used to avoid recompiling anything that hasn't changed since the last invocation of the compiler. In Rust this can largely be broken down into two areas:
 
-* If we can cache the already compiled dependencies, if we then make any unrelated changes to Cargo.toml then those dependencies shouldn't be recompiled. For example, bumping the version of Axum shouldn't trigger a recompilation of Tokio. Similarly, introducing a brand new dependency shouldn't trigger a recompilation of any existing dependencies.
-* If we can cache parts of the main binary compilation process then changing the source of only one part of it should only cause that part to be recompiled. This, however, requires us to structure the code in a specific way which we'll go into later with a more complex example than our current `hello-world-ws`. The use of sccache and the associated `Containerfile` instructions in this section will give you that caching with no additional effort.
+* If we can cache the already compiled dependencies, if we then make any unrelated changes to Cargo.toml then those dependencies shouldn't be recompiled. For example, bumping the version of Axum shouldn't trigger a recompilation of Tokio. Similarly, introducing a brand new dependency shouldn't trigger a recompilation of any existing dependencies. Although the updated `Cargo.toml` leads to a changed `recipe.json` which will invalidate the `cargo chef cook` layer, `sccache` comes to the rescue by bringing in unchanged dependencies from the cache.
+* If we can cache parts of the main binary compilation process then changing the source of only one part of it should only cause that part to be recompiled. This, however, requires us to structure the code in a specific way which we'll go into later with a more complex example than our current `hello-world-ws`. The use of sccache and the associated `Containerfile` instructions in this section will give you that caching with no additional effort, at least locally! A later chapter will discuss how to reuse Buildkit cache mounts across CI pipeline runs.
 
 ## The Containerfile
 
@@ -31,7 +31,7 @@ The `RUN cargo chef cook` and `RUN cargo build` steps in the `builder` stage now
 ```
 
 * `/usr/local/cargo/registry` - Cache Cargo's package/dependency registry
-* `/usr/local/cargo/git` - Cache Cargo''s Git-based dependency registry
+* `/usr/local/cargo/git` - Cache Cargo's Git-based dependency registry
 * `$SCCACHE_DIR` (`/sccache`) - Cache our crate's compilation artifacts
 
 The behaviour of our image builds is now:
