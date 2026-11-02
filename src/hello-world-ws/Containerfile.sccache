@@ -1,0 +1,50 @@
+# syntax=docker/dockerfile:1.28.0
+
+ARG RUST_VERSION=1.99.1
+ARG CARGO_BINSTALL_VERSION=1.26.2
+ARG CARGO_BINSTALL_CHECKSUM=4f28eba175325f67f7c4bb8ae8686914d2d88fead279c0b8c4d3125264d7a512
+ARG CARGO_CHEF_VERSION=0.1.78
+ARG SCCACHE_VERSION=0.19.0
+
+FROM public.ecr.aws/docker/library/rust:${RUST_VERSION}-slim-trixie AS chef
+ARG CARGO_CHEF_VERSION
+ARG CARGO_BINSTALL_VERSION
+ARG CARGO_BINSTALL_CHECKSUM
+ARG SCCACHE_VERSION
+RUN /usr/lib/apt/apt-helper download-file "https://github.com/cargo-bins/cargo-binstall/releases/download/v${CARGO_BINSTALL_VERSION}/cargo-binstall-x86_64-unknown-linux-gnu.tgz" /tmp/cargo-binstall.tgz \
+    && echo "${CARGO_BINSTALL_CHECKSUM}  /tmp/cargo-binstall.tgz" | sha256sum -c - \
+    && tar -C /usr/local/bin -xzf /tmp/cargo-binstall.tgz \
+    && rm /tmp/cargo-binstall.tgz
+RUN cargo binstall --disable-telemetry -y cargo-chef@${CARGO_CHEF_VERSION} sccache@${SCCACHE_VERSION}
+ENV RUSTC_WRAPPER=sccache \
+    SCCACHE_DIR=/sccache
+WORKDIR /app
+
+FROM chef AS planner
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
+
+FROM chef AS builder
+RUN rustup target add x86_64-unknown-linux-musl
+# Build dependencies
+COPY --from=planner /app/recipe.json recipe.json
+RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
+    --mount=type=cache,target=/usr/local/cargo/git,sharing=locked \
+    --mount=type=cache,target=$SCCACHE_DIR,sharing=locked \
+    cargo chef cook --release --target=x86_64-unknown-linux-musl --recipe-path recipe.json
+# Build app 
+COPY . .
+RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
+    --mount=type=cache,target=/usr/local/cargo/git,sharing=locked \
+    --mount=type=cache,target=$SCCACHE_DIR,sharing=locked \
+    cargo build --release --target=x86_64-unknown-linux-musl && \
+    cp target/x86_64-unknown-linux-musl/release/hello-world-ws \
+    target/x86_64-unknown-linux-musl/release/hello-world-ws.dwp \
+    /app
+
+FROM scratch
+COPY --from=builder \
+    /app/hello-world-ws \
+    /app/hello-world-ws.dwp \
+    /
+ENTRYPOINT [ "/hello-world-ws" ]

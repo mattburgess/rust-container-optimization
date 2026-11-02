@@ -1,4 +1,4 @@
-# Image Layer Caching
+# Image Layer Caching - Part 1
 
 As explained in Docker's own [Docker build cache](https://docs.docker.com/build/cache/) documentation, Docker images are built up as a series of layers:
 
@@ -6,7 +6,7 @@ As explained in Docker's own [Docker build cache](https://docs.docker.com/build/
 * If a layer changes, because either the command in the Dockerfile changed or the file contents it refers to changes, Docker will rebuild that layer.
 * If a layer changes, all subsequent layers are also rebuilt because they might depend on the the changed layer
 
-In order to minimise the amount of work performed during a container build, we we therefore need to structure the Dockerfile / the image layers, such that we invalidate as few layers as possible as infrequently as possible.
+In order to minimise the amount of work performed during a container build, we therefore need to structure the Dockerfile / the image layers, such that we invalidate as few layers as possible as infrequently as possible.
 
 As an example of Docker's build caching at work, let's rebuild the image from scratch:
 
@@ -55,7 +55,7 @@ Note how the `COPY . .` step, and all subsequent steps, now no longer have a rel
 
 ## Ignore unnecessary files
 
-The first way we have of preventing unnecesary cache invalidation is by not copying files that are unrelated to the image build process into the Docker build context. In the example above, we created a `dummy.txt` file that had nothing at all to do with the Rust program that was being compiled, yet doing so caused the `RUN cargo build...` layer (and subsequent layers) to be rebuilt.
+The first way we have of preventing unnecesary cache invalidation is by not copying files that are unrelated to the image build process into the Docker build context. In the example above, we created a `dummy.txt` file that had nothing at all to do with the compilation of our Rust program, yet doing so caused the `RUN cargo build...` layer (and subsequent layers) to be rebuilt.
 
 The `.dockerignore` file can be used to explicitly omit files and directories from being copied into the Docker build context. Instead of maintaining a deny list of files that we don't want to be copied, we instead explicitly allow files that we know are required to build and run the application. This prevents any accidental or temporary local files from invalidating the build cache:
 
@@ -165,3 +165,10 @@ real    0m10.970s
 ```
 
 Note how all steps in the `builder` stage use the cached dependency layers and only the actual `hello-world-ws` binary compilation is performed due to the change in source code, exactly what we wanted. It results in a huge 75% reduction in build time.
+
+There are 2 optimization opportunities left:
+
+* A change to a single dependency in `Cargo.toml` will cause the `cargo chef cook` layer to rebuild all dependencies; its entire layer is invalidated so has to be rebuilt from scratch
+* Similarly, a change to any of the source files that make up `hello-world-ws` will cause the `cargo build --release` layer to be invalidated and therefore all source will be recompiled even though Rust has the ability to incrementally compile only what's changed.
+
+We'll see how to address both of those issues using the same techniques in the next section.
