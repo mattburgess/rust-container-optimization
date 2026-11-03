@@ -6,7 +6,7 @@ The first two issues mentioned in [Initial Observations](./hello-world.md#initia
 
 ### Implicit docker/dockerfile dependency
 
-Different container build engines (e.g. BuildKit, Podman), and different versions thereof, support various features of the `Containerfile`/`Dockerfile` format. If no explicit version of that format is specified, the build engine's default will be used. Therefore, by specifying the exact version of the Dockerfile syntax frontend to use, any differences in support between local developer's machines and CI can be eliminated.
+Different container build engines (e.g. BuildKit, Podman), and different versions thereof support various features of the `Containerfile`/`Dockerfile` format. If no explicit version of that format is specified, the build engine's default will be used. Therefore, by specifying the exact version of the Dockerfile syntax frontend to use, any differences in support between local developers' machines and CI can be eliminated.
 
 Adding `# syntax=docker/dockerfile:1.28.0` (for example) as the very first line in the Container file will pin the syntax frontend.
 
@@ -20,7 +20,7 @@ It's also important to note that the `rust` image is available in both Debian an
 
 ## Mitigating docker.io rate limits
 
-docker.io rate limits unauthenticated image pulls to 10 per hour per IPv4 address / IPv6 /64 subnet. That is incredibly restrictive for pretty much anyone, but is a particularly acute problem for developers whose machines are  sat behind a corporate proxy and for CI systems.
+docker.io rate limits unauthenticated image pulls to 10 per hour per IPv4 address / IPv6 /64 subnet. That is incredibly restrictive for pretty much anyone, but is a particularly acute problem for developers whose machines are  located behind a corporate proxy and for CI systems.
 
 There are a number of techniques that can be used to mitigate docker.io's throttling:
 

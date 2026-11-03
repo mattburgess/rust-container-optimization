@@ -24,19 +24,19 @@ Using `abort` instead of the default `unwind` removes structural constraints tha
 * Enables Aggressive Code Inlining: The compiler no longer needs to preserve distinct, sequential stack frames for unwinding cleanup, freeing it up to inline functions more aggressively.
 * Unlocks Advanced Loop Optimizations: The compiler can freely reorder or eliminate instructions within loops, as it is no longer bound by the strict requirement to drop local variables in a precise sequence if a panic occurs.
 
-### debug = "line-tables-only"
+### `debug = "line-tables-only"`
 
 The default for the `release` profile is `debug = false`, which strips all debug-related information from the binary, which also includes human-readable file and line information that would otherwise appear in crash logs. Setting this to `line-tables-only` retains the absolute minimum amount of debug information required to produce meaningful backtraces with filenames and line numbers, without bloating the binary size with variable or type metadata. If the application crashes in production then this information alongside other telemetry (metrics, logs, and traces) can prove invaluable in understanding the root cause.
 
-### split-debuginfo = "packed"
+### `split-debuginfo = "packed"`
 
 Instead of retaining the above debug information in the binary itself, this option tells the compiler to save the information to a separate file. This generally reduces the size of the image as the information is stored more efficiently in the split out file than in the binary itself.
 
-### lto = true
+### `lto = true`
 
 Instructs the compiler to perform whole-program analysis across the local crate, the standard library, and all third-party dependencies, allowing for deep optimization and dead-code elimination across the entire dependency graph.
 
-### codegen-units = 1
+### `codegen-units = 1`
 
 The default for the `release` profile is `codegen-units = 16`, which splits the crate into 16 separate chunks to parallelise compilation at the expense of optimization depth. By forcing a single unit (`codegen-units = 1`), we prevent the codebase from being partitioned. This gives the compiler a completely unified view of our code, allowing for better optimizations before the LTO phase.
 

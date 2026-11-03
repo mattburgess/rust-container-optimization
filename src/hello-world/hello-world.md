@@ -66,7 +66,7 @@ The good news is that the container successfully builds and runs, but there are 
 
 1. Developers may be running different versions of container build tools. For example, some might use Docker's buildkit while others are using Podman. Different versions of those tools may not understand all of the syntax in a given `Containerfile`.
 1. `Trying to pull docker.io/library/rust:latest...` - without an explicit tag on the image reference, the `latest` version at the time of building will be used. While the Rust project is very careful to ensure backward compatibility of releases, bugs can creep in leading to linting and compilation failures.
-1. docker.io implements some quite restrictive rate limiting for unauthenticated users. This can cause build failures for developers building locally and for automated CI systems
+1. docker.io implements some quite restrictive rate limiting for unauthenticated users. This can cause build failures for developers building locally and for automated CI systems.
 1. ``Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.10s`` - by default, `cargo build` will produce a `debug` build.
 1. And last, but certainly by no means least, the image is huge!
 

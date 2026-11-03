@@ -2,7 +2,7 @@
 
 Static linking instructs the linker to copy all of the required library code into the final executable file. As a result, no dynamic libraries need to be copied into our final container image.
 
-Reliably statically linking our executable is made much easier by using the `musl` C library instead of Glibc, which is the default when using Debian as the compilation host. Glibc makes use of `dlopen()` to dynamically load some libraries at runtime, for example for DNS resolution. So, even if instructed to do so, the Rust toolchain can't guarantee a truly 100% static binary when using Glibc. `musl` doesn't use `dlopen()` so a statically linked binary using that library is the only file required within the container image.
+Reliably statically linking our executable is made much easier by using the `musl` C library instead of `glibc`, which is the default when using Debian as the compilation host. `glibc` makes use of `dlopen()` to dynamically load some libraries at runtime, for example for DNS resolution. So, even if instructed to do so, the Rust toolchain can't guarantee a truly 100% static binary when using `glibc`. `musl` doesn't use `dlopen()` so a statically linked binary using that library is the only file required within the container image.
 
 The `Containerfile` below installs the `musl` target for Rust and instructs the compiler to cross-compile to that target.
 
