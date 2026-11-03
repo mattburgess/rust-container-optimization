@@ -11,7 +11,7 @@ cargo add axum@0.8.9 tokio@1.54.0 --no-default-features --features axum@0.8.9/ht
 ```
 
 > [!NOTE]
-> Disabling a crate's default features and enabling just those features that your program requires minimizes the amount of work the compiler has to do. Cargo will download and compile any dependencies you specify before moving onto your code. The final binary size is unaffected though as the linker will realise that there are no references to the unused code and can therefore eliminate it from the final build artifact.
+> Disabling a crate's default features and enabling just those features that your program requires minimizes the amount of work the compiler has to do. Cargo will download and compile any dependencies you specify before moving onto your code. The final binary size is unaffected, though, as the linker will realise that there are no references to the unused code and can therefore eliminate it from the final build artifact.
 
 Change the auto-generated `src/main.rs` to match [axum's "Hello World" example](https://github.com/tokio-rs/axum/blob/main/examples/hello-world/src/main.rs):
 

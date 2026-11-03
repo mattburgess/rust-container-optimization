@@ -6,8 +6,8 @@ RUN ldd /target/release/hello-world
 
 FROM scratch
 COPY --from=builder \
-    target/release/hello-world \
-    target/release/hello-world.dwp \
+    /target/release/hello-world \
+    /target/release/hello-world.dwp \
     /
 COPY --from=builder \
     /lib/x86_64-linux-gnu/libgcc_s.so.1 \

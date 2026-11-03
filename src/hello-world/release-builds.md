@@ -1,6 +1,6 @@
 # Release Builds
 
-At the moment, the compiled binary inside our image is 4.4MiB. By providing a few parameters to the Rust compiler, though, we can improve things quite considerably. The main gains are achieved by using Rust's `release` profile which aims to optimize the compilation and linking process to produce smaller binaries suitable for production use. It does this by, among other things, removing information that's only required for debugging during development.
+At the moment, the compiled binary inside our image is 4.4MiB. By providing a few parameters to the Rust compiler, though, we can improve things quite considerably. The main gains are achieved by using Rust's `release` profile which aims to optimize the compilation and linking process to produce smaller binaries suitable for production use. It does this by, among other things, removing information that is only required for debugging during development.
 
 ## Release profile tuning
 
@@ -15,7 +15,7 @@ lto = true
 codegen-units = 1
 ```
 
-### panic = "abort"
+### `panic = "abort"`
 
 Instead of unwinding the stack during a panic, this setting immediately terminates the process. Because the binary is running within a container, the application will exit instantly, allowing the container runtime to quickly detect the failure, log the exit code, and start a fresh container.
 
@@ -38,7 +38,7 @@ Instructs the compiler to perform whole-program analysis across the local crate,
 
 ### codegen-units = 1
 
-The default for the `release` profile is `codegen-units = 16`, which splits the crate into 16 separate chunks to parallelise compilation at the expense of optimization depth. By forcing a single unit (`codegen-units = 1`), we prevent the codebase from being partitioned. This gives the compiler a completely unified view of our code, allowing the whole-program analysis of `lto = true` to work at maximum efficiency.
+The default for the `release` profile is `codegen-units = 16`, which splits the crate into 16 separate chunks to parallelise compilation at the expense of optimization depth. By forcing a single unit (`codegen-units = 1`), we prevent the codebase from being partitioned. This gives the compiler a completely unified view of our code, allowing for better optimizations before the LTO phase.
 
 ### Other options
 

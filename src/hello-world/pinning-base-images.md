@@ -2,7 +2,7 @@
 
 ## Pinning image references
 
-The first 2 issues mentioned in [Initial Observations](./hello-world.md#initial-observations) concerned implicit and explicit build-time dependencies that weren't pinned to specific versions. Both of those can lead to build issues that depend on either the time the build is invoked or the machine on which it is invoked.
+The first two issues mentioned in [Initial Observations](./hello-world.md#initial-observations) concerned implicit and explicit build-time dependencies that weren't pinned to specific versions. Both of those can lead to build issues that depend on either the time the build is invoked or the machine on which it is invoked.
 
 ### Implicit docker/dockerfile dependency
 

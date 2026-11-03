@@ -20,4 +20,4 @@ Rust Container Optimization is free and open source. You can find the source cod
 This project is dual-licensed:
 
 * The **text, explanations, and diagrams** are licensed under the [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt) license.
-* All **code snippets, Dockerfiles, configurations, and scripts** are licensed under the [MIT License](https://opensource.org/license/mit).
+* All **code snippets, Containerfiles, configurations, and scripts** are licensed under the [MIT License](https://opensource.org/license/mit).
