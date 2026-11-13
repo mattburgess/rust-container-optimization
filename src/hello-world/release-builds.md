@@ -79,7 +79,7 @@ $ docker run -it --entrypoint /bin/sh localhost/hello-world:latest \
   -rw-r--r--. 2 root root 591K Oct 22 19:51 /target/release/hello-world.dwp
 ```
 
-We've shrunk the binary from 4.4MiB -> 1.25MiB (taking the split debuginfo file into account), representing ~72% improvement while maintaining reasonable debugging and speed optimizations for production use.
+We've shrunk the binary from 4.4MiB -> 1.25MiB (taking the split debuginfo file into account), representing a ~72% improvement while maintaining reasonable debugging and speed optimizations for production use.
 
 The image itself is still massive though:
 

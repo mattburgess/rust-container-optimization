@@ -12,7 +12,7 @@ Note that the build process remains the same as before:
 
 ```shell
 $ docker build -t localhost/hello-world:latest .
-[1/2] STEP 1/3: FROM public.ecr.aws/docker/library/rust:1.99.1-slim-trixie AS build
+[1/2] STEP 1/3: FROM public.ecr.aws/docker/library/rust:1.100.0-slim-trixie AS build
 [1/2] STEP 2/3: COPY . .
 --> fd4b02e7ac79
 [1/2] STEP 3/3: RUN cargo build --release

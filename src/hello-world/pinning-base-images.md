@@ -8,13 +8,13 @@ The first two issues mentioned in [Initial Observations](./hello-world.md#initia
 
 Different container build engines (e.g. BuildKit, Podman), and different versions thereof support various features of the `Containerfile`/`Dockerfile` format. If no explicit version of that format is specified, the build engine's default will be used. Therefore, by specifying the exact version of the Dockerfile syntax frontend to use, any differences in support between local developers' machines and CI can be eliminated.
 
-Adding `# syntax=docker/dockerfile:1.28.0` (for example) as the very first line in the Container file will pin the syntax frontend.
+Adding `# syntax=docker/dockerfile:1.29.0` (for example) as the very first line in the Container file will pin the syntax frontend.
 
 ### Implicit Rust version
 
 The initial `Containerfile` used `FROM rust` as the source image. With no tag specified, future builds will use the latest version available at that time which can lead to changes in behaviour of various Rust tools.
 
-Changing `FROM rust` to `FROM rust:1.99.1` (for example) will pin the Rust compiler and associated tools to a fixed version.
+Changing `FROM rust` to `FROM rust:1.100.0` (for example) will pin the Rust compiler and associated tools to a fixed version.
 
 It's also important to note that the `rust` image is available in both Debian and Alpine variants, and by default any tag that doesn't contain an explicit variant (e.g. `latest`, `1.99.1`) will point to the equivalent "full" Debian variant. For example, `1.99.1` will point at `1.99.1-trixie`.
 
@@ -30,7 +30,7 @@ There are a number of techniques that can be used to mitigate docker.io's thrott
 
 While a private registry is recommended for production systems, it's out of scope for this guide. Instead, we'll simply use Amazon's Public ECR.
 
-Our `FROM rust` line can now change to `public.ecr.aws/docker/library/rust:1.99.1-trixie` to both avoid docker.io rate limits and to pin to a fixed variant and version of the image.
+Our `FROM rust` line can now change to `public.ecr.aws/docker/library/rust:1.100.0-trixie` to both avoid docker.io rate limits and to pin to a fixed variant and version of the image.
 
 ## Image size reduction round one
 
@@ -48,7 +48,7 @@ And the results?
 
 ```shell
 $ docker build -t localhost/hello-world:latest .
-STEP 1/4: FROM public.ecr.aws/docker/library/rust:1.99.1-slim-trixie
+STEP 1/4: FROM public.ecr.aws/docker/library/rust:1.100.0-slim-trixie
 STEP 2/4: COPY . .
 STEP 3/4: RUN cargo build --release
 STEP 4/4: ENTRYPOINT [ "/target/release/hello-world" ]

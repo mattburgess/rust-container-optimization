@@ -8,23 +8,22 @@ As explained in Docker's own [Docker build cache](https://docs.docker.com/build/
 
 In order to minimise the amount of work performed during a container build, we therefore need to structure the Containerfile / the image layers, such that we invalidate as few layers as possible as infrequently as possible.
 
-As an example of Docker's build caching at work, let's rebuild the image from scratch:
+As an example of Docker's build caching at work, let's rebuild the image from scratch by taking advantage of `docker`s' `--no-cache` option:
 
 ```shell
-$ docker image rm localhost/hello-world-ws:latest
-$ time docker build -t localhost/hello-world-ws:latest .
-[1/2] STEP 1/5: FROM public.ecr.aws/docker/library/rust:1.99.1-slim-trixie AS build
+$ time docker build --no-cache -t localhost/hello-world-ws:latest .
+[1/2] STEP 1/5: FROM public.ecr.aws/docker/library/rust:1.100.0-slim-trixie AS build
 [1/2] STEP 2/5: RUN rustup target add x86_64-unknown-linux-musl
 ... Lots of compilation steps omitted
 Successfully tagged localhost/hello-world-ws:latest
 real    0m33.723s
 ```
 
-And now build the image again:
+And now build the image again, ensuring to omit the `--no-cache` option this time:
 
 ```shell
 $ time docker build -t localhost/hello-world-ws:latest .
-[1/2] STEP 1/5: FROM public.ecr.aws/docker/library/rust:1.99.1-slim-trixie AS build
+[1/2] STEP 1/5: FROM public.ecr.aws/docker/library/rust:1.100.0-slim-trixie AS build
 [1/2] STEP 2/5: RUN rustup target add x86_64-unknown-linux-musl
 --> Using cache c936677250ecbf5b822d0b10230a60786a21fd0ce276b57ecfa3ed85202be5d4
 --> c936677250ec
@@ -41,7 +40,7 @@ If you make a trivial change to the contents of the working directory then the `
 ```shell
 $ touch dummy.txt
 $ time docker build -t localhost/hello-world-ws:latest .
-[1/2] STEP 1/5: FROM public.ecr.aws/docker/library/rust:1.99.1-slim-trixie AS build
+[1/2] STEP 1/5: FROM public.ecr.aws/docker/library/rust:1.100.0-slim-trixie AS build
 [1/2] STEP 2/5: RUN rustup target add x86_64-unknown-linux-musl
 --> Using cache 14a2546c4a9cc46331a9ada0fb9e41ad1e89c7627eb5c7d8f8df54aa79934c81
 --> 14a2546c4a9c
@@ -137,10 +136,10 @@ This is as simple as it was previously. Even though the steps before it have gro
 
 What's the net effect of the use of `cargo-chef` then?
 
-A "cold" build of the image can be forced using the `--no-cache` option to `docker build`:
+Again, we'll start by using `--no-cache` to ensure a "cold" build of the image to make accurate comparisons:
 
 ```shell
-$ time docker build --no-cache -t localhost/hello-world-ws:latest
+$ time docker build --no-cache -t localhost/hello-world-ws:latest .
 ...
 real    0m42.676s
 ```
@@ -148,7 +147,7 @@ real    0m42.676s
 If we then change the output of our program from `<h1>Hello, World!</h1>` to `<h1>Hi, World!</h1>` the image builds in a few seconds (be sure not to use the `--no-cache` option from the previous command!):
 
 ```shell
-$ time docker build -t localhost/hello-world-ws:latest
+$ time docker build -t localhost/hello-world-ws:latest .
 ...
 [3/4] STEP 3/6: COPY --from=planner /app/recipe.json recipe.json
 --> Using cache b625608b848825320610a9d47c65ad0d0713662f02cc3c4493ead235d9562026

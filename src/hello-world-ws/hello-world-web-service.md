@@ -7,7 +7,11 @@ For this, we'll use a very simple web service implemented using the [axum](https
 Let's start off by initializing our new project and adding the dependencies  and features required to run axum's "Hello World" example:
 
 ```shell
-cargo add axum@0.8.9 tokio@1.54.0 --no-default-features --features axum@0.8.9/http1,axum@0.8.9/tokio,tokio@1.54.0/rt-multi-thread
+$ cargo init hello-world-ws
+    Creating binary (application) package
+note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+$ cd hello-world-ws
+$ cargo add axum@0.8.9 tokio@1.54.1 --no-default-features --features axum@0.8.9/http1,axum@0.8.9/tokio,tokio@1.54.1/rt-multi-thread
 ```
 
 > [!NOTE]
@@ -64,3 +68,12 @@ localhost/hello-world-ws  latest      326936a8aeca  43 seconds ago  4.32 MB
 While the build times and image size have increased quite substantially (~10x and ~3x respectively), that's somewhat expected; a web service is considerably more complex than our previous "Hello World" command line app.
 
 Somewhat more concerning, though, is that if you make a single line change to the code (e.g. making it print `<h1>Hi, World!</h1>` instead), you'll notice that Cargo builds everything, including our dependencies, from scratch! The next section will address that inefficiency.
+
+Before we move on though, let's tidy up the currently running container so that the containers we build in the next section will run correctly. The previous `docker run` command used the `-d` (`--detach`) option to have control returned to the command line by having the container run in the background. This is because the web service process currently doesn't accept interrupts such as ctrl-C to terminate them. We'll fix that in a later section, but for now we can ask the container runtime to forcefully kill the container:
+
+```shell
+$ docker kill $(docker ps -q --filter "ancestor=hello-world-ws")
+7daf842d35be
+$ docker container rm --filter "ancestor=hello-world-ws"
+7daf842d35be03928b6ee9ad843b68a284837f917b01b4077452be72fc22f10a
+```
